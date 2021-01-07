@@ -32,4 +32,4 @@ class Game():
         if check_errors[1] > 0:
             sys.exit()
         else:
-            print('ok')
+            print('Bruh')
