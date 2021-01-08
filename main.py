@@ -73,7 +73,7 @@ class Game():
     def start_screen(self):
         intro_text = ["ЗМЕЙКА", "",
                       "В разработке принемали участие", ""
-                                                        "Боровков Павел и Шорников Алексея", "", "", "", "",
+                                                        "Боровков Павел и Шорников Александр", "", "", "", "",
                       "НАЖМИТЕ ЧТОБЫ НАЧАТЬ"]
         name = os.path.join('D:\PycharmProjects\Data\zmeya-zelenyy-fon-minimalizm.jpg')
         load_image = pygame.image.load(name)
