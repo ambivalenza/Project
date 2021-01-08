@@ -1,7 +1,8 @@
-import sys
-import random
-import time
 import os
+import sys
+import time
+
+import game as game
 import pygame
 
 
@@ -72,7 +73,7 @@ class Game():
     def start_screen(self):
         intro_text = ["ЗМЕЙКА", "",
                       "В разработке принемали участие", ""
-                      "Боровков Павел и Шорников Алексея", "", "", "", "",
+                                                        "Боровков Павел и Шорников Алексея", "", "", "", "",
                       "НАЖМИТЕ ЧТОБЫ НАЧАТЬ"]
         name = os.path.join('D:\PycharmProjects\Data\zmeya-zelenyy-fon-minimalizm.jpg')
         load_image = pygame.image.load(name)
@@ -81,7 +82,7 @@ class Game():
         font = pygame.font.SysFont('monaco', 25)
         text_coord = 30
         for line in intro_text:
-            string_rendered = font.render(line, 1, pygame.Color(19, 137, 8))
+            string_rendered = font.render(line, True, pygame.Color(19, 137, 8))
             intro_rect = string_rendered.get_rect()
             text_coord += 10
             intro_rect.top = text_coord
@@ -95,3 +96,34 @@ class Game():
                         event.type == pygame.MOUSEBUTTONDOWN:
                     return  # начинаем игру
             pygame.display.flip()
+
+    def show_score(self, choice=1):
+        """Отображение результата"""
+        s_font = pygame.font.SysFont('monaco', 24)
+        s_surf = s_font.render(
+            'Score: {0}'.format(self.score), True, self.black)
+        s_rect = s_surf.get_rect()
+        # дефолтный случай отображаем результат слева сверху
+        if choice == 1:
+            s_rect.midtop = (80, 10)
+        # при game_over отображаем результат по центру
+        # под надписью game over
+        else:
+            s_rect.midtop = (360, 120)
+        # рисуем прямоугольник поверх surface
+        self.play_surface.blit(s_surf, s_rect)
+
+    def game_over(self):
+        """Функция для вывода надписи Game Over и результатов
+        в случае завершения игры и выход из игры"""
+        pygame.mixer.music.pause()
+        go_font = pygame.font.SysFont('monaco', 72)
+        go_surf = go_font.render('Game over', True, self.red)
+        go_rect = go_surf.get_rect()
+        go_rect.midtop = (360, 15)
+        self.play_surface.blit(go_surf, go_rect)
+        self.show_score(0)
+        pygame.display.flip()
+        time.sleep(2)
+        pygame.quit()
+        sys.exit()
