@@ -73,9 +73,9 @@ class Game():
     def start_screen(self):
         intro_text = ["ЗМЕЙКА", "",
                       "В разработке принемали участие", ""
-                                                        "Боровков Павел и Шорников Алексея", "", "", "", "",
+                                                        "Боровков Павел и Шорников Александр", "", "", "", "",
                       "НАЖМИТЕ ЧТОБЫ НАЧАТЬ"]
-        name = os.path.join('D:\PycharmProjects\Data\zmeya-zelenyy-fon-minimalizm.jpg')
+        name = os.path.join('zmeya-zelenyy-fon-minimalizm.jpg')
         load_image = pygame.image.load(name)
         fon = pygame.transform.scale(load_image, (self.screen_width, self.screen_height))
         self.play_surface.blit(fon, (0, 0))
