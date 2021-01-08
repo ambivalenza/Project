@@ -2,7 +2,6 @@ import os
 import sys
 import time
 
-import game as game
 import pygame
 
 
@@ -35,7 +34,7 @@ class Game():
         if check_errors[1] > 0:
             sys.exit()
         else:
-            print('Bruh')
+            print('ok')
 
     def set_surface_and_title(self):
         """Задаем surface(поверхность поверх которой будет все рисоваться)
@@ -43,6 +42,9 @@ class Game():
         self.play_surface = pygame.display.set_mode((
             self.screen_width, self.screen_height))
         pygame.display.set_caption('Snake Game')
+        # Добавление музыки на задний фон
+        pygame.mixer.music.load('background.mp3')
+        pygame.mixer.music.set_volume(0.3)
 
     def event_loop(self, change_to):
         """Функция для отслеживания нажатий клавиш игроком"""
@@ -75,7 +77,7 @@ class Game():
                       "В разработке принемали участие", ""
                                                         "Боровков Павел и Шорников Александр", "", "", "", "",
                       "НАЖМИТЕ ЧТОБЫ НАЧАТЬ"]
-        name = os.path.join('zmeya-zelenyy-fon-minimalizm.jpg')
+        name = os.path.join('snake_background.jpg')
         load_image = pygame.image.load(name)
         fon = pygame.transform.scale(load_image, (self.screen_width, self.screen_height))
         self.play_surface.blit(fon, (0, 0))
