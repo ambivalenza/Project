@@ -129,3 +129,38 @@ class Game():
         time.sleep(2)
         pygame.quit()
         sys.exit()
+
+class Snake():
+    def __init__(self, snake_color):
+        # важные переменные - позиция головы змеи и его тела
+        self.snake_head_pos = [100, 50]  # [x, y]
+        # начальное тело змеи состоит из трех сегментов
+        # голова змеи - первый элемент, хвост - последний
+        self.snake_body = [[100, 50], [90, 50], [80, 50]]
+        self.snake_color = snake_color
+        # направление движение змеи, изначально
+        # зададимся вправо
+        self.direction = "RIGHT"
+        # куда будет меняться напрвление движения змеи
+        # при нажатии соответствующих клавиш
+        self.change_to = self.direction
+
+    def validate_direction_and_change(self):
+        """Изменияем направление движения змеи только в том случае,
+        если оно не прямо противоположно текущему"""
+        if any((self.change_to == "RIGHT" and not self.direction == "LEFT",
+                self.change_to == "LEFT" and not self.direction == "RIGHT",
+                self.change_to == "UP" and not self.direction == "DOWN",
+                self.change_to == "DOWN" and not self.direction == "UP")):
+            self.direction = self.change_to
+
+    def change_head_position(self):
+        """Изменияем положение головы змеи"""
+        if self.direction == "RIGHT":
+            self.snake_head_pos[0] += 10
+        elif self.direction == "LEFT":
+            self.snake_head_pos[0] -= 10
+        elif self.direction == "UP":
+            self.snake_head_pos[1] -= 10
+        elif self.direction == "DOWN":
+            self.snake_head_pos[1] += 10
