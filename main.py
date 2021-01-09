@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-
+import random
 import pygame
 
 
@@ -164,3 +164,51 @@ class Snake():
             self.snake_head_pos[1] -= 10
         elif self.direction == "DOWN":
             self.snake_head_pos[1] += 10
+
+    def snake_body_mechanism(
+            self, score, food_pos, screen_width, screen_height):
+        flag = True
+        self.snake_body.insert(0, list(self.snake_head_pos))
+        # если съели еду
+        if (self.snake_head_pos[0] == food_pos[0] and
+                self.snake_head_pos[1] == food_pos[1]):
+            while flag:
+                # Цикл для проверки координат еды
+                food_pos = [random.randrange(1, screen_width / 10) * 10,
+                            random.randrange(1, screen_height / 10) * 10]
+                for pos in self.snake_body:
+                    if food_pos[0] != pos[0] and food_pos[1] != pos[1]:
+                        flag = False
+            # если съели еду то задаем новое положение еды случайным
+            # образом и увеличивем score на один
+            score += 1
+
+        else:
+            # если не нашли еду, то убираем последний сегмент,
+            self.snake_body.pop()
+        return score, food_pos
+
+    def draw_snake(self, play_surface, surface_color):
+        """Отображаем все сегменты змеи"""
+        play_surface.fill(surface_color)
+        for pos in self.snake_body:
+            pygame.draw.rect(
+                play_surface, self.snake_color, pygame.Rect(
+                    pos[0], pos[1], 10, 10))
+
+    def check_for_boundaries(self, game_over, screen_width, screen_height):
+        """Проверка, что столкунлись с концами экрана или сами с собой
+        (змея закольцевалась)"""
+        if any((
+                self.snake_head_pos[0] > screen_width - 10
+                or self.snake_head_pos[0] < 0,
+                self.snake_head_pos[1] > screen_height - 10
+                or self.snake_head_pos[1] < 0
+        )):
+            game_over()
+        for block in self.snake_body[1:]:
+            # проверка на то, что первый элемент(голова) врезался в
+            # любой другой элемент змеи (закольцевались)
+            if (block[0] == self.snake_head_pos[0] and
+                    block[1] == self.snake_head_pos[1]):
+                game_over()
