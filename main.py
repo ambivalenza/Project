@@ -1,7 +1,8 @@
 import os
+import random
 import sys
 import time
-import random
+
 import pygame
 
 
@@ -130,6 +131,7 @@ class Game():
         pygame.quit()
         sys.exit()
 
+
 class Snake():
     def __init__(self, snake_color):
         # важные переменные - позиция головы змеи и его тела
@@ -212,3 +214,44 @@ class Snake():
             if (block[0] == self.snake_head_pos[0] and
                     block[1] == self.snake_head_pos[1]):
                 game_over()
+
+
+class Food():
+    def __init__(self, food_color, screen_width, screen_height):
+        """Инит еды"""
+        self.food_color = food_color
+        self.food_size_x = 10
+        self.food_size_y = 10
+        self.food_pos = [random.randrange(1, screen_width / 10) * 10,
+                         random.randrange(1, screen_height / 10) * 10]
+
+    def draw_food(self, play_surface):
+        """Отображение еды"""
+        pygame.draw.rect(
+            play_surface, self.food_color, pygame.Rect(
+                self.food_pos[0], self.food_pos[1],
+                self.food_size_x, self.food_size_y))
+
+
+game = Game()
+snake = Snake(game.green)
+food = Food(game.brown, game.screen_width, game.screen_height)
+game.init_and_check_for_errors()
+game.set_surface_and_title()
+pygame.mixer.music.play(-1)
+
+while True:
+    snake.change_to = game.event_loop(snake.change_to)
+    snake.validate_direction_and_change()
+    snake.change_head_position()
+    game.score, food.food_pos = snake.snake_body_mechanism(
+        game.score, food.food_pos, game.screen_width, game.screen_height)
+    snake.draw_snake(game.play_surface, game.sweet_green)
+
+    food.draw_food(game.play_surface)
+
+    snake.check_for_boundaries(
+        game.game_over, game.screen_width, game.screen_height)
+
+    game.show_score()
+    game.refresh_screen()
