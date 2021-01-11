@@ -1,11 +1,15 @@
 import os
 import random
+import sqlite3
 import sys
 import time
 
 import pygame
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
+
+UI_FILE = 'UI1.ui'
+DB_FILE = 'leaderboard.sqlite'
 
 
 class widget(QWidget):
@@ -39,14 +43,20 @@ class widget(QWidget):
         self.curr_text = ''
         self.difficulty.currentTextChanged.connect(self.difficulty2)
 
-        self.button = QPushButton('Ok', self)
+        self.button = QPushButton('Начать игру', self)
         self.button.move(170, 105)
-        self.button.resize(70, 25)
+        self.button.resize(85, 25)
         self.button.clicked.connect(self.exec)
+
+        self.button = QPushButton('Таблица лидеров', self)
+        self.button.move(25, 105)
+        self.button.resize(130, 25)
+        self.button.clicked.connect(self.exec)
+
+        self.connection = sqlite3.connect(DB_FILE)
 
     def difficulty2(self):
         self.curr_text = self.difficulty.currentText()
-
 
     def exec(self):
         if self.curr_text == '':
