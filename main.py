@@ -47,6 +47,7 @@ class Game():
         pygame.mixer.music.load('background.mp3')
         pygame.mixer.music.set_volume(0.3)
 
+
     def event_loop(self, change_to):
         """Функция для отслеживания нажатий клавиш игроком"""
 
@@ -70,10 +71,36 @@ class Game():
                     sys.exit()
         return change_to
 
+    def print_text(self, message, x, y, font_color=(0, 0, 139), font_type='MonacoRegular.ttf', font_size=30):
+        font_type = pygame.font.Font(font_type, font_size)
+        text = font_type.render(message, True, font_color)
+        self.play_surface.blit(text, (x, y))
+
     def refresh_screen(self):
         """обновляем экран и задаем фпс"""
         pygame.display.flip()
-        game.fps_controller.tick(20)
+        game.fps_controller.tick(10)
+
+    def pause(self):
+        paused = True
+
+        pygame.mixer.music.pause()
+
+        while paused:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+
+            self.print_text('Paused. Press enter to continue', 80, 250)
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RETURN]:
+                paused = False
+
+            self.refresh_screen()
+
+        pygame.mixer.music.unpause()
 
     def start_screen(self):
         intro_text = ["ЗМЕЙКА", "",
@@ -237,6 +264,7 @@ class Food():
 
 game = Game()
 snake = Snake(game.green)
+
 food = Food(game.brown, game.screen_width, game.screen_height)
 game.init_and_check_for_errors()
 game.set_surface_and_title()
