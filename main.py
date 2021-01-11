@@ -7,6 +7,7 @@ import time
 import pygame
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
+from leadertable import Ui_Dialog
 
 UI_FILE = 'UI1.ui'
 DB_FILE = 'leaderboard.sqlite'
@@ -48,10 +49,9 @@ class widget(QWidget):
         self.button.resize(85, 25)
         self.button.clicked.connect(self.exec)
 
-        self.button = QPushButton('Таблица лидеров', self)
-        self.button.move(25, 105)
-        self.button.resize(130, 25)
-        self.button.clicked.connect(self.exec)
+        self.button_leader = QPushButton('Таблица лидеров', self)
+        self.button_leader.move(25, 105)
+        self.button_leader.resize(130, 25)
 
         self.connection = sqlite3.connect(DB_FILE)
 
