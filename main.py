@@ -2,10 +2,10 @@ import os
 import random
 import sys
 import time
-import pygame
-import sqlite3
-from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton
 
+import pygame
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
 
 
 class widget(QWidget):
@@ -17,18 +17,19 @@ class widget(QWidget):
         self.setWindowTitle('Змейка')
         self.setFixedSize(270, 150)
 
-        self.line = QLineEdit('Введите ваше имя', self)
-        self.line.setReadOnly(True)
-        self.line.move(10, 10)
+        self.line = QLabel('Введите ваше имя', self)
+        self.line.setFont(QFont("MonacoRegular.ttf", 8))
+        self.line.move(25, 10)
         self.line.resize(110, 25)
 
         self.input_value = QLineEdit('', self)
         self.input_value.move(140, 10)
         self.input_value.resize(100, 25)
 
-        self.line2 = QLineEdit('Уровень сложности', self)
-        self.line2.setReadOnly(True)
-        self.line2.move(10, 55)
+        self.line2 = QLabel('Уровень сложности', self)
+        self.line2.setFont(QFont("MonacoRegular.ttf", 8))
+        self.line2.adjustSize()
+        self.line2.move(25, 55)
         self.line2.resize(110, 25)
 
         self.difficulty = QComboBox(self)
@@ -97,8 +98,7 @@ class Game():
         pygame.display.set_caption('Snake Game')
         # Добавление музыки на задний фон
         pygame.mixer.music.load('background.mp3')
-        pygame.mixer.music.set_volume(0.3)
-
+        pygame.mixer.music.set_volume(0.01)
 
     def event_loop(self, change_to):
         """Функция для отслеживания нажатий клавиш игроком"""
@@ -168,6 +168,7 @@ class Game():
         self.play_surface.blit(fon, (0, 0))
         font = pygame.font.SysFont('monaco', 25)
         text_coord = 30
+        pygame.mixer.music.pause()
         for line in intro_text:
             string_rendered = font.render(line, True, pygame.Color(19, 137, 8))
             intro_rect = string_rendered.get_rect()
@@ -182,7 +183,9 @@ class Game():
                 if event.type == pygame.KEYDOWN or \
                         event.type == pygame.MOUSEBUTTONDOWN:
                     return  # начинаем игру
+                pygame.mixer.music.unpause()
             pygame.display.flip()
+
 
     def show_score(self, choice=1):
         """Отображение результата"""
@@ -335,6 +338,7 @@ while w.name == '':
         if event.type == pygame.KEYDOWN or \
                 event.type == pygame.MOUSEBUTTONDOWN:
             break
+    pygame.mixer.music.unpause()
     pygame.display.flip()
 
 while True:
