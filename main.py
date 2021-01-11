@@ -62,6 +62,8 @@ class Game():
                     change_to = "UP"
                 elif event.key == pygame.K_DOWN or event.key == ord('s'):
                     change_to = "DOWN"
+                elif event.key == pygame.K_p:
+                    self.pause()
                 # нажали escape
                 elif event.key == pygame.K_ESCAPE:
                     pygame.quit()
