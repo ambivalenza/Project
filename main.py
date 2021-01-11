@@ -2,8 +2,60 @@ import os
 import random
 import sys
 import time
-
 import pygame
+import sqlite3
+from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton
+
+
+
+class widget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.name = ''
+        self.ls = []
+
+        self.setWindowTitle('Змейка')
+        self.setFixedSize(270, 150)
+
+        self.line = QLineEdit('Введите ваше имя', self)
+        self.line.setReadOnly(True)
+        self.line.move(10, 10)
+        self.line.resize(110, 25)
+
+        self.input_value = QLineEdit('', self)
+        self.input_value.move(140, 10)
+        self.input_value.resize(100, 25)
+
+        self.line2 = QLineEdit('Уровень сложности', self)
+        self.line2.setReadOnly(True)
+        self.line2.move(10, 55)
+        self.line2.resize(110, 25)
+
+        self.difficulty = QComboBox(self)
+        self.difficulty.addItems(["Любитель", "Профи"])
+        self.difficulty.move(140, 55)
+        self.difficulty.resize(80, 25)
+        self.curr_text = ''
+        self.difficulty.currentTextChanged.connect(self.difficulty2)
+
+        self.buttone = QPushButton('Ok', self)
+        self.buttone.move(170, 105)
+        self.buttone.resize(70, 25)
+        self.buttone.clicked.connect(self.exec)
+
+    def difficulty2(self):
+        self.curr_text = self.difficulty.currentText()
+
+    def exec(self):
+        if self.curr_text == '':
+            self.curr_text = 'Любитель'
+        if self.input_value.text() == '':
+            self.name = 'unnamed'
+        else:
+            self.name = self.input_value.text()
+        self.ls = [self.name, self.curr_text]
+        print(self.ls)
+        w.hide()
 
 
 class Game():
@@ -269,6 +321,18 @@ food = Food(game.brown, game.screen_width, game.screen_height)
 game.init_and_check_for_errors()
 game.set_surface_and_title()
 pygame.mixer.music.play(-1)
+game.start_screen()
+
+app = QApplication(sys.argv)
+w = widget()
+w.show()
+
+while w.name == '':
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN or \
+                event.type == pygame.MOUSEBUTTONDOWN:
+            break
+    pygame.display.flip()
 
 while True:
     snake.change_to = game.event_loop(snake.change_to)
