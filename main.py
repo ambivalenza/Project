@@ -131,7 +131,10 @@ class Game():
     def refresh_screen(self):
         """обновляем экран и задаем фпс"""
         pygame.display.flip()
-        game.fps_controller.tick(10)
+        if w.ls[1] == 'Любитель':
+            game.fps_controller.tick(15)
+        else:
+            game.fps_controller.tick(25)
 
     def pause(self):
         paused = True
