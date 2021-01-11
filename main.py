@@ -39,13 +39,14 @@ class widget(QWidget):
         self.curr_text = ''
         self.difficulty.currentTextChanged.connect(self.difficulty2)
 
-        self.buttone = QPushButton('Ok', self)
-        self.buttone.move(170, 105)
-        self.buttone.resize(70, 25)
-        self.buttone.clicked.connect(self.exec)
+        self.button = QPushButton('Ok', self)
+        self.button.move(170, 105)
+        self.button.resize(70, 25)
+        self.button.clicked.connect(self.exec)
 
     def difficulty2(self):
         self.curr_text = self.difficulty.currentText()
+
 
     def exec(self):
         if self.curr_text == '':
@@ -56,6 +57,7 @@ class widget(QWidget):
             self.name = self.input_value.text()
         self.ls = [self.name, self.curr_text]
         print(self.ls)
+        pygame.mixer.music.unpause()
         w.hide()
 
 
@@ -95,10 +97,10 @@ class Game():
         и устанавливаем загаловок окна"""
         self.play_surface = pygame.display.set_mode((
             self.screen_width, self.screen_height))
-        pygame.display.set_caption('Snake Game')
+        pygame.display.set_caption('Змейка')
         # Добавление музыки на задний фон
         pygame.mixer.music.load('background.mp3')
-        pygame.mixer.music.set_volume(0.01)
+        pygame.mixer.music.set_volume(0.3)
 
     def event_loop(self, change_to):
         """Функция для отслеживания нажатий клавиш игроком"""
@@ -142,24 +144,21 @@ class Game():
         pygame.mixer.music.pause()
 
         while paused:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    quit()
-
             self.print_text('Paused. Press enter to continue', 80, 250)
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_RETURN]:
-                paused = False
-
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                    if event.key == pygame.K_RETURN:
+                        paused = False
+                        pygame.mixer.music.unpause()
             self.refresh_screen()
 
-        pygame.mixer.music.unpause()
-
     def start_screen(self):
+        pygame.mixer.music.pause()
         intro_text = ["ЗМЕЙКА", "",
-                      "В разработке принемали участие", ""
+                      "В разработке принимали участие", ""
                                                         "Боровков Павел и Шорников Александр", "", "", "", "",
                       "НАЖМИТЕ ЧТОБЫ НАЧАТЬ"]
         name = os.path.join('snake_background.jpg')
@@ -168,9 +167,8 @@ class Game():
         self.play_surface.blit(fon, (0, 0))
         font = pygame.font.SysFont('monaco', 25)
         text_coord = 30
-        pygame.mixer.music.pause()
         for line in intro_text:
-            string_rendered = font.render(line, True, pygame.Color(19, 137, 8))
+            string_rendered = font.render(line, True, pygame.Color(0, 0, 0))
             intro_rect = string_rendered.get_rect()
             text_coord += 10
             intro_rect.top = text_coord
@@ -180,12 +178,13 @@ class Game():
 
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN or \
-                        event.type == pygame.MOUSEBUTTONDOWN:
-                    return  # начинаем игру
-                pygame.mixer.music.unpause()
-            pygame.display.flip()
-
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                    if event.key == pygame.K_SPACE:
+                        return
+                pygame.display.flip()
 
     def show_score(self, choice=1):
         """Отображение результата"""
@@ -338,7 +337,6 @@ while w.name == '':
         if event.type == pygame.KEYDOWN or \
                 event.type == pygame.MOUSEBUTTONDOWN:
             break
-    pygame.mixer.music.unpause()
     pygame.display.flip()
 
 while True:
