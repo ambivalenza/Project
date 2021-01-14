@@ -2,7 +2,7 @@ import sqlite3
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget, QHeaderView
 
 DB_FILE = 'leaderboard.sqlite'
 
@@ -52,6 +52,7 @@ class Ui_Dialog(object):
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(2)
         self.tableWidget.setRowCount(0)
+        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tableWidget.setHorizontalHeaderLabels(['nickname', 'score'])
 
         self.tableWidget.setRowCount(0)

@@ -229,6 +229,8 @@ class Game:
         db = DB()
         db.save(self.username, self.difficulty, self.score)
 
+
+
     def game_over(self):
         """Функция для вывода надписи Game Over и результатов
         в случае завершения игры и выход из игры"""
