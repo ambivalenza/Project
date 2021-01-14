@@ -1,10 +1,12 @@
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QTableWidgetItem
 
 
 class Ui_Dialog(object):
-    def __init__(self, difficulty, *args, **kwargs):
+    def __init__(self, difficulty, connection, *args, **kwargs):
+        self.connection = connection
         self.difficulty = difficulty
         super().__init__(*args, **kwargs)
 
@@ -14,8 +16,22 @@ class Ui_Dialog(object):
         self.tableWidget = QtWidgets.QTableWidget(Dialog)
         self.tableWidget.setGeometry(QtCore.QRect(30, 40, 261, 331))
         self.tableWidget.setObjectName("tableWidget")
-        self.tableWidget.setColumnCount(0)
+        self.tableWidget.setColumnCount(2)
         self.tableWidget.setRowCount(0)
+        self.tableWidget.setHorizontalHeaderLabels(['nickname', 'score'])
+        query = f'''SELECT name, score FROM leaderboards WHERE difficulty = "{self.difficulty}" order by score desc'''
+        try:
+            res = self.connection.cursor().execute(query).fetchall()
+        except:
+            import traceback
+            print(traceback.format_exc())
+        self.tableWidget.setRowCount(0)
+        for i, row in enumerate(res):
+            self.tableWidget.setRowCount(
+                self.tableWidget.rowCount() + 1)
+            for j, elem in enumerate(row):
+                self.tableWidget.setItem(
+                    i, j, QTableWidgetItem(str(elem)))
         self.label_leaderboard = QtWidgets.QLabel(Dialog)
         self.label_leaderboard.setGeometry(QtCore.QRect(30, 10, 271, 16))
         font = QtGui.QFont()

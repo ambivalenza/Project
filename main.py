@@ -5,13 +5,12 @@ import sys
 import time
 
 import pygame
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
-from PyQt5 import QtWidgets
 
 from leadertable import Ui_Dialog
 
-UI_FILE = 'UI1.ui'
 DB_FILE = 'leaderboard.sqlite'
 
 
@@ -19,15 +18,16 @@ class widget(QWidget):
     def open_leadertable(self):
         self.window = QtWidgets.QMainWindow()
         try:
-            self.ui = Ui_Dialog(self.curr_text)
+            self.ui = Ui_Dialog(self.curr_text, self.connection)
         except:
             import traceback
             print(traceback.format_exc())
         self.ui.setupUi(self.window)
         self.window.show()
 
-    def __init__(self):
+    def __init__(self, game):
         super().__init__()
+        self.game = game
         self.name = ''
         self.ls = []
 
@@ -53,7 +53,7 @@ class widget(QWidget):
         self.difficulty.addItems(["Любитель", "Профи"])
         self.difficulty.move(140, 55)
         self.difficulty.resize(80, 25)
-        self.curr_text = 'Любитель'
+        self.game.difficulty = self.curr_text = 'Любитель'
         self.difficulty.currentTextChanged.connect(self.difficulty2)
 
         self.button = QPushButton('Начать игру', self)
@@ -70,6 +70,7 @@ class widget(QWidget):
 
     def difficulty2(self):
         self.curr_text = self.difficulty.currentText()
+        self.game.difficulty = self.curr_text
 
     def exec(self):
         if self.curr_text == '':
@@ -78,7 +79,9 @@ class widget(QWidget):
             self.name = 'unnamed'
         else:
             self.name = self.input_value.text()
+        self.game.username = self.name
         self.ls = [self.name, self.curr_text]
+
         print(self.ls)
         pygame.mixer.music.unpause()
         w.hide()
@@ -86,6 +89,9 @@ class widget(QWidget):
 
 class Game:
     def __init__(self):
+        self.username = ''
+        self.difficulty = ''
+
         # задаем размеры экрана
         self.screen_width = 720
         self.screen_height = 460
@@ -225,6 +231,32 @@ class Game:
         # рисуем прямоугольник поверх surface
         self.play_surface.blit(s_surf, s_rect)
 
+    def save_score(self):
+        """Сохранение результата"""
+
+        connection = sqlite3.connect(DB_FILE)
+        res = connection.execute(f"SELECT * FROM leaderboards WHERE name = '{self.username}' AND difficulty = '{self.difficulty}'").fetchone()
+        if res:
+            connection.execute(f'''
+UPDATE leaderboards 
+SET score = {self.score}
+WHERE name = '{self.username}' AND difficulty = '{self.difficulty}'
+''')
+        else:
+            connection.execute(f'''
+    INSERT INTO leaderboards     (
+                          difficulty,
+                          name, 
+                          score
+                      )
+                      VALUES (
+                          "{self.difficulty}",
+                          "{self.username}",
+                          {self.score}
+                      );''')
+        connection.commit()
+
+
     def game_over(self):
         """Функция для вывода надписи Game Over и результатов
         в случае завершения игры и выход из игры"""
@@ -235,6 +267,7 @@ class Game:
         go_rect.midtop = (360, 15)
         self.play_surface.blit(go_surf, go_rect)
         self.show_score(0)
+        self.save_score()
         pygame.display.flip()
         time.sleep(2)
         pygame.quit()
@@ -352,7 +385,7 @@ pygame.mixer.music.play(-1)
 game.start_screen()
 
 app = QApplication(sys.argv)
-w = widget()
+w = widget(game)
 w.show()
 
 while w.name == '':
