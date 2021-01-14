@@ -170,7 +170,7 @@ class Game():
         intro_text = ["ЗМЕЙКА", "",
                       "В разработке принимали участие", ""
                                                         "Боровков Павел и Шорников Александр", "", "", "", "",
-                      "НАЖМИТЕ ЧТОБЫ НАЧАТЬ"]
+                      "НАЖМИТЕ ПРОБЕЛ ЧТОБЫ НАЧАТЬ"]
         name = os.path.join('snake_background.jpg')
         load_image = pygame.image.load(name)
         fon = pygame.transform.scale(load_image, (self.screen_width, self.screen_height))
