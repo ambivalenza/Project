@@ -1,10 +1,13 @@
 import sys
 
-import ui as ui
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_Dialog(object):
+    def __init__(self, difficulty, *args, **kwargs):
+        self.difficulty = difficulty
+        super().__init__(*args, **kwargs)
+
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(321, 402)
@@ -27,7 +30,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.label_leaderboard.setText(_translate("Dialog", "таблица лидеров уровня Любитель"))
+        self.label_leaderboard.setText(_translate("Dialog", f"таблица лидеров уровня {self.difficulty}"))
 
     def start_window(self):
         app = QtWidgets.QApplication(sys.argv)
@@ -35,3 +38,12 @@ class Ui_Dialog(object):
         ui = Ui_Dialog()
         ui.setupUi(MainWindow)
         MainWindow.show()
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog = QtWidgets.QDialog()
+    ui = Ui_Dialog()
+    ui.setupUi(Dialog)
+    Dialog.show()
+    sys.exit(app.exec_())

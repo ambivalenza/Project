@@ -7,6 +7,8 @@ import time
 import pygame
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
+from PyQt5 import QtWidgets
+
 from leadertable import Ui_Dialog
 
 UI_FILE = 'UI1.ui'
@@ -14,6 +16,16 @@ DB_FILE = 'leaderboard.sqlite'
 
 
 class widget(QWidget):
+    def open_leadertable(self):
+        self.window = QtWidgets.QMainWindow()
+        try:
+            self.ui = Ui_Dialog(self.curr_text)
+        except:
+            import traceback
+            print(traceback.format_exc())
+        self.ui.setupUi(self.window)
+        self.window.show()
+
     def __init__(self):
         super().__init__()
         self.name = ''
@@ -41,7 +53,7 @@ class widget(QWidget):
         self.difficulty.addItems(["Любитель", "Профи"])
         self.difficulty.move(140, 55)
         self.difficulty.resize(80, 25)
-        self.curr_text = ''
+        self.curr_text = 'Любитель'
         self.difficulty.currentTextChanged.connect(self.difficulty2)
 
         self.button = QPushButton('Начать игру', self)
@@ -52,6 +64,7 @@ class widget(QWidget):
         self.button_leader = QPushButton('Таблица лидеров', self)
         self.button_leader.move(25, 105)
         self.button_leader.resize(130, 25)
+        self.button_leader.clicked.connect(self.open_leadertable)
 
         self.connection = sqlite3.connect(DB_FILE)
 
@@ -71,7 +84,7 @@ class widget(QWidget):
         w.hide()
 
 
-class Game():
+class Game:
     def __init__(self):
         # задаем размеры экрана
         self.screen_width = 720
@@ -228,7 +241,7 @@ class Game():
         sys.exit()
 
 
-class Snake():
+class Snake:
     def __init__(self, snake_color):
         # важные переменные - позиция головы змеи и его тела
         self.snake_head_pos = [100, 50]  # [x, y]
@@ -312,7 +325,7 @@ class Snake():
                 game_over()
 
 
-class Food():
+class Food:
     def __init__(self, food_color, screen_width, screen_height):
         """Инит еды"""
         self.food_color = food_color
