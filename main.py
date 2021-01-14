@@ -1,6 +1,5 @@
 import os
 import random
-import sqlite3
 import sys
 import time
 
@@ -9,19 +8,13 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
 
-from leadertable import Ui_Dialog
-
-DB_FILE = 'leaderboard.sqlite'
+from leadertable import Ui_Dialog, DB
 
 
 class widget(QWidget):
     def open_leadertable(self):
         self.window = QtWidgets.QMainWindow()
-        try:
-            self.ui = Ui_Dialog(self.curr_text, self.connection)
-        except:
-            import traceback
-            print(traceback.format_exc())
+        self.ui = Ui_Dialog(self.curr_text)
         self.ui.setupUi(self.window)
         self.window.show()
 
@@ -66,7 +59,7 @@ class widget(QWidget):
         self.button_leader.resize(130, 25)
         self.button_leader.clicked.connect(self.open_leadertable)
 
-        self.connection = sqlite3.connect(DB_FILE)
+        self.db = DB()
 
     def difficulty2(self):
         self.curr_text = self.difficulty.currentText()
@@ -233,29 +226,8 @@ class Game:
 
     def save_score(self):
         """Сохранение результата"""
-
-        connection = sqlite3.connect(DB_FILE)
-        res = connection.execute(f"SELECT * FROM leaderboards WHERE name = '{self.username}' AND difficulty = '{self.difficulty}'").fetchone()
-        if res:
-            connection.execute(f'''
-UPDATE leaderboards 
-SET score = {self.score}
-WHERE name = '{self.username}' AND difficulty = '{self.difficulty}'
-''')
-        else:
-            connection.execute(f'''
-    INSERT INTO leaderboards     (
-                          difficulty,
-                          name, 
-                          score
-                      )
-                      VALUES (
-                          "{self.difficulty}",
-                          "{self.username}",
-                          {self.score}
-                      );''')
-        connection.commit()
-
+        db = DB()
+        db.save(self.username, self.difficulty, self.score)
 
     def game_over(self):
         """Функция для вывода надписи Game Over и результатов

@@ -1,12 +1,46 @@
+import sqlite3
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QTableWidgetItem
 
+DB_FILE = 'leaderboard.sqlite'
+
+
+class DB:
+    def __init__(self):
+        self.connection = sqlite3.connect(DB_FILE)
+
+    def query(self, difficulty):
+        query = f'''SELECT name, score FROM leaderboards WHERE difficulty = "{difficulty}" order by score desc'''
+        return self.connection.cursor().execute(query).fetchall()
+
+    def save(self, name, difficulty, score):
+        res = self.connection.execute(
+            f"SELECT * FROM leaderboards WHERE name = '{name}' AND difficulty = '{difficulty}'").fetchone()
+        if res:
+            self.connection.execute(f'''
+        UPDATE leaderboards 
+        SET score = {score}
+        WHERE name = '{name}' AND difficulty = '{difficulty}'
+        ''')
+        else:
+            self.connection.execute(f'''
+            INSERT INTO leaderboards     (
+                                  difficulty,
+                                  name, 
+                                  score
+                              )
+                              VALUES (
+                                  "{difficulty}",
+                                  "{name}",
+                                  {score}
+                              );''')
+        self.connection.commit()
 
 class Ui_Dialog(object):
-    def __init__(self, difficulty, connection, *args, **kwargs):
-        self.connection = connection
+    def __init__(self, difficulty, *args, **kwargs):
+        self.db = DB()
         self.difficulty = difficulty
         super().__init__(*args, **kwargs)
 
@@ -19,14 +53,9 @@ class Ui_Dialog(object):
         self.tableWidget.setColumnCount(2)
         self.tableWidget.setRowCount(0)
         self.tableWidget.setHorizontalHeaderLabels(['nickname', 'score'])
-        query = f'''SELECT name, score FROM leaderboards WHERE difficulty = "{self.difficulty}" order by score desc'''
-        try:
-            res = self.connection.cursor().execute(query).fetchall()
-        except:
-            import traceback
-            print(traceback.format_exc())
+
         self.tableWidget.setRowCount(0)
-        for i, row in enumerate(res):
+        for i, row in enumerate(self.db.query(self.difficulty)):
             self.tableWidget.setRowCount(
                 self.tableWidget.rowCount() + 1)
             for j, elem in enumerate(row):
