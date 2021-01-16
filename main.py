@@ -77,7 +77,6 @@ class widget(QWidget):
         self.game.username = self.name
         self.ls = [self.name, self.curr_text]
 
-        print(self.ls)
         pygame.mixer.music.unpause()
         w.hide()
 
@@ -114,8 +113,6 @@ class Game:
         check_errors = pygame.init()
         if check_errors[1] > 0:
             sys.exit()
-        else:
-            print('ok')
 
     def set_surface_and_title(self):
         """Задаем surface(поверхность поверх которой будет все рисоваться)
