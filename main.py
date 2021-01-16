@@ -91,6 +91,10 @@ class Game:
         self.screen_width = 720
         self.screen_height = 460
 
+        self.food_flag = True
+        self.circle_radius = 10
+        self.touch_the_circle = False
+
         # необходимые цвета
         self.red = pygame.Color(255, 0, 0)
         self.sweet_green = pygame.Color(154, 255, 154)
@@ -301,6 +305,11 @@ class Snake:
             # если съели еду то задаем новое положение еды случайным
             # образом и увеличивем score на один
             score += 1
+            # если змея сьела большое яблоко то размер яблока возвращается к привычному значению
+            if game.touch_the_circle:
+                game.food_flag = True
+                game.circle_radius = 10
+                game.touch_the_circle = False
 
         else:
             # если не нашли еду, то убираем последний сегмент,
@@ -333,21 +342,45 @@ class Snake:
                 game_over()
 
 
-class Food:
+class Food():
     def __init__(self, food_color, screen_width, screen_height):
         """Инит еды"""
         self.food_color = food_color
         self.food_size_x = 10
         self.food_size_y = 10
         self.food_pos = [random.randrange(1, screen_width / 10) * 10,
-                         random.randrange(1, screen_height / 10) * 10]
+                         random.randrange(1, 460 / 10) * 10]
 
     def draw_food(self, play_surface):
         """Отображение еды"""
-        pygame.draw.rect(
-            play_surface, self.food_color, pygame.Rect(
-                self.food_pos[0], self.food_pos[1],
-                self.food_size_x, self.food_size_y))
+        # когда отрисовывать большое яблоко
+        if game.score % 7 == 0 and game.circle_radius > 1 and game.score != 0 and game.food_flag:
+            self.circle_pos = self.food_pos[0] + 5, self.food_pos[1] + 5
+            game.circle_radius -= 1 / 7
+            pygame.draw.circle(game.play_surface, pygame.Color('red'), self.circle_pos, game.circle_radius)
+
+        # если игрок не успел сьесть большое ялоко, рисуется обычное яблоко
+        elif game.circle_radius <= 1:
+            pygame.draw.rect(
+                play_surface, self.food_color, pygame.Rect(
+                    self.food_pos[0], self.food_pos[1],
+                    self.food_size_x, self.food_size_y))
+
+        # если большое яблоко было съедено то счет прибавляется и флаг поднимается
+        if game.circle_radius > 1 and game.circle_radius < 10 and (game.score - 1) % 7 == 0:
+            game.score += 2
+            game.touch_the_circle = True
+
+        # если игрок не успел сьесть большое ялоко, опускается флаг
+        if game.circle_radius <= 1:
+            game.food_flag = False
+
+        # рисуется обычное яблоко
+        if game.score % 7 != 0 or game.circle_radius <= 1 or game.score == 0 or game.food_flag == False:
+            pygame.draw.rect(
+                play_surface, self.food_color, pygame.Rect(
+                    self.food_pos[0], self.food_pos[1],
+                    self.food_size_x, self.food_size_y))
 
 
 game = Game()
