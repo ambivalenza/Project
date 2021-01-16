@@ -54,7 +54,6 @@ class Ui_Dialog(object):
         self.tableWidget.setRowCount(0)
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tableWidget.setHorizontalHeaderLabels(['nickname', 'score'])
-
         self.tableWidget.setRowCount(0)
         for i, row in enumerate(self.db.query(self.difficulty)):
             self.tableWidget.setRowCount(
@@ -75,7 +74,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Лидеры"))
         self.label_leaderboard.setText(_translate("Dialog", f"таблица лидеров уровня {self.difficulty}"))
 
     def start_window(self):
@@ -84,12 +83,3 @@ class Ui_Dialog(object):
         ui = Ui_Dialog()
         ui.setupUi(MainWindow)
         MainWindow.show()
-
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
-    sys.exit(app.exec_())

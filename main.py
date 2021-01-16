@@ -1,12 +1,14 @@
 import os
 import random
 import sys
+from sys import exit
 import time
 
 import pygame
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
+
 
 from leadertable import Ui_Dialog, DB
 
@@ -24,7 +26,7 @@ class widget(QWidget):
         self.name = ''
         self.ls = []
 
-        self.setWindowTitle('Змейка')
+        self.setWindowTitle('Ввод данных')
         self.setFixedSize(270, 150)
 
         self.line = QLabel('Введите ваше имя', self)
@@ -78,6 +80,7 @@ class widget(QWidget):
         print(self.ls)
         pygame.mixer.music.unpause()
         w.hide()
+
 
 
 class Game:
@@ -182,7 +185,8 @@ class Game:
         intro_text = ["ЗМЕЙКА", "",
                       "В разработке принимали участие", ""
                                                         "Боровков Павел и Шорников Александр", "", "", "", "",
-                      "НАЖМИТЕ ПРОБЕЛ ЧТОБЫ НАЧАТЬ"]
+                      "НАЖМИТЕ space ЧТОБЫ НАЧАТЬ",
+                      "НАЖМИТЕ esc ЧТОБЫ ВЫЙТИ"]
         name = os.path.join('snake_background.jpg')
         load_image = pygame.image.load(name)
         fon = pygame.transform.scale(load_image, (self.screen_width, self.screen_height))
