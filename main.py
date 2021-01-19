@@ -1,14 +1,12 @@
 import os
 import random
 import sys
-from sys import exit
 import time
 
 import pygame
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
-
 
 from leadertable import Ui_Dialog, DB
 
@@ -79,7 +77,6 @@ class widget(QWidget):
 
         pygame.mixer.music.unpause()
         w.hide()
-
 
 
 class Game:
@@ -233,8 +230,6 @@ class Game:
         """Сохранение результата"""
         db = DB()
         db.save(self.username, self.difficulty, self.score)
-
-
 
     def game_over(self):
         """Функция для вывода надписи Game Over и результатов
