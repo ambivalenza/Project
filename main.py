@@ -389,14 +389,12 @@ game.start_screen()
 
 app = QApplication(sys.argv)
 w = widget(game)
-w.show()
 
 while w.name == '':
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN or \
-                event.type == pygame.MOUSEBUTTONDOWN:
-            break
-    pygame.display.flip()
+    game.start_screen()
+    w.show()
+
+
 
 while True:
     snake.change_to = game.event_loop(snake.change_to)
