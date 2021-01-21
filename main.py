@@ -385,7 +385,6 @@ food = Food(game.brown, game.screen_width, game.screen_height)
 game.init_and_check_for_errors()
 game.set_surface_and_title()
 pygame.mixer.music.play(-1)
-game.start_screen()
 
 app = QApplication(sys.argv)
 w = widget(game)
