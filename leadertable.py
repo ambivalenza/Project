@@ -2,7 +2,7 @@ import sqlite3
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QTableWidgetItem, QTableWidget, QHeaderView
+from PyQt5.QtWidgets import QTableWidgetItem
 
 DB_FILE = 'leaderboard.sqlite'
 

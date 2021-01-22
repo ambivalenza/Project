@@ -9,12 +9,19 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
 
 from leadertable import Ui_Dialog, DB
+from rules import Dialog
 
 
 class widget(QWidget):
     def open_leadertable(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_Dialog(self.curr_text)
+        self.ui.setupUi(self.window)
+        self.window.show()
+
+    def rules(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Dialog()
         self.ui.setupUi(self.window)
         self.window.show()
 
@@ -25,7 +32,7 @@ class widget(QWidget):
         self.ls = []
 
         self.setWindowTitle('Ввод данных')
-        self.setFixedSize(270, 150)
+        self.setFixedSize(285, 190)
 
         self.line = QLabel('Введите ваше имя', self)
         self.line.setFont(QFont("MonacoRegular.ttf", 8))
@@ -51,13 +58,25 @@ class widget(QWidget):
 
         self.button = QPushButton('Начать игру', self)
         self.button.move(170, 105)
-        self.button.resize(85, 25)
+        self.button.resize(100, 25)
         self.button.clicked.connect(self.exec)
 
         self.button_leader = QPushButton('Таблица лидеров', self)
         self.button_leader.move(25, 105)
         self.button_leader.resize(130, 25)
         self.button_leader.clicked.connect(self.open_leadertable)
+
+        self.button_info = QPushButton('Справка', self)
+        self.button_info.move(25, 155)
+        self.button_info.resize(130, 25)
+        self.button_info.clicked.connect(self.rules)
+
+        # кнопка выкл\вкл музыки
+        # self.music_stop = QPushButton('Вкл/выкл музыки', self)
+        # self.music_stop.move(170, 155)
+        # self.music_stop.resize(100, 25)
+        # self.music_stop.clicked.connect(game.music_management)
+
 
         self.db = DB()
 
@@ -133,7 +152,7 @@ class Game:
         pygame.display.set_caption('Змейка')
         # Добавление музыки на задний фон
         pygame.mixer.music.load('background.mp3')
-        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.set_volume(0.01)
 
     def event_loop(self, change_to):
         """Функция для отслеживания нажатий клавиш игроком"""
@@ -257,6 +276,9 @@ class Game:
         time.sleep(3)
         pygame.quit()
         sys.exit()
+
+    # def music_management(self):
+        # pass
 
 
 class Snake:
