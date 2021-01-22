@@ -61,6 +61,17 @@ class widget(QWidget):
 
         self.db = DB()
 
+    # def closeEvent(self, event):
+    # reply = QMessageBox.question(self, 'Выход из игры', 'Вы уверены, что хотите выйти из игры?',
+    # QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+    # if reply == QMessageBox.Yes:
+    # event.accept
+    # sys.exit()
+    # else:
+    # event.ignore
+    # w.show()
+
     def difficulty2(self):
         self.curr_text = self.difficulty.currentText()
         self.game.difficulty = self.curr_text
@@ -76,7 +87,6 @@ class widget(QWidget):
         self.ls = [self.name, self.curr_text]
 
         pygame.mixer.music.unpause()
-        w.hide()
 
 
 class Game:
@@ -157,7 +167,7 @@ class Game:
         """обновляем экран и задаем фпс"""
         pygame.display.flip()
         if w.ls[1] == 'Любитель':
-            game.fps_controller.tick(15)
+            game.fps_controller.tick(20)
         else:
             game.fps_controller.tick(25)
 
@@ -175,7 +185,6 @@ class Game:
                         sys.exit()
                     if event.key == pygame.K_RETURN:
                         paused = False
-                        pygame.mixer.music.unpause()
             self.refresh_screen()
 
     def start_screen(self):
@@ -200,15 +209,17 @@ class Game:
             text_coord += intro_rect.height
             self.play_surface.blit(string_rendered, intro_rect)
 
-        while True:
+        while w.name == '':
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         sys.exit()
                     if event.key == pygame.K_SPACE:
-                        return
+                        w.show()
                 pygame.display.flip()
+
+        w.close()
 
     def show_score(self, choice=1):
         """Отображение результата"""
@@ -243,7 +254,7 @@ class Game:
         self.show_score(0)
         self.save_score()
         pygame.display.flip()
-        time.sleep(2)
+        time.sleep(3)
         pygame.quit()
         sys.exit()
 
@@ -344,7 +355,7 @@ class Food():
         self.food_size_x = 10
         self.food_size_y = 10
         self.food_pos = [random.randrange(1, screen_width / 10) * 10,
-                         random.randrange(1, 460 / 10) * 10]
+                         random.randrange(1, 46) * 10]
 
     def draw_food(self, play_surface):
         """Отображение еды"""
@@ -362,7 +373,7 @@ class Food():
                     self.food_size_x, self.food_size_y))
 
         # если большое яблоко было съедено то счет прибавляется и флаг поднимается
-        if game.circle_radius > 2 and game.circle_radius < 10 and (game.score - 1) % 7 == 0:
+        if 2 < game.circle_radius < 10 and (game.score - 1) % 7 == 0:
             game.score += 2
             game.touch_the_circle = True
 
@@ -389,9 +400,7 @@ pygame.mixer.music.play(-1)
 app = QApplication(sys.argv)
 w = widget(game)
 
-while w.name == '':
-    game.start_screen()
-    w.show()
+game.start_screen()
 
 
 
