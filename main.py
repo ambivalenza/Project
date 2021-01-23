@@ -147,7 +147,6 @@ class Game:
 
         def wrapper():
             enable = music.isChecked()
-            print(enable)
             pygame.mixer.music.set_volume(0 if not enable else 0.3)
 
         return wrapper
