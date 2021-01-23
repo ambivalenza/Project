@@ -40,7 +40,7 @@ class widget(QWidget):
         self.line.resize(110, 25)
 
         self.input_value = QLineEdit('', self)
-        self.input_value.move(140, 10)
+        self.input_value.move(170, 10)
         self.input_value.resize(100, 25)
 
         self.line2 = QLabel('Уровень сложности', self)
@@ -51,8 +51,8 @@ class widget(QWidget):
 
         self.difficulty = QComboBox(self)
         self.difficulty.addItems(["Любитель", "Профи"])
-        self.difficulty.move(140, 55)
-        self.difficulty.resize(80, 25)
+        self.difficulty.move(170, 55)
+        self.difficulty.resize(100, 25)
         self.game.difficulty = self.curr_text = 'Любитель'
         self.difficulty.currentTextChanged.connect(self.difficulty2)
 
