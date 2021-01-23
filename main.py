@@ -6,7 +6,7 @@ import time
 import pygame
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel
+from PyQt5.QtWidgets import QLineEdit, QComboBox, QWidget, QApplication, QPushButton, QLabel, QCheckBox
 
 from leadertable import Ui_Dialog, DB
 from rules import Dialog
@@ -72,11 +72,10 @@ class widget(QWidget):
         self.button_info.clicked.connect(self.rules)
 
         # кнопка выкл\вкл музыки
-        # self.music_stop = QPushButton('Вкл/выкл музыки', self)
-        # self.music_stop.move(170, 155)
-        # self.music_stop.resize(100, 25)
-        # self.music_stop.clicked.connect(game.music_management)
-
+        self.music = QCheckBox('Звук', self)
+        self.music.move(170, 155)
+        self.music.resize(110, 25)
+        self.music.clicked.connect(game.music_management(self.music))
 
         self.db = DB()
 
@@ -144,6 +143,15 @@ class Game:
         if check_errors[1] > 0:
             sys.exit()
 
+    def music_management(self, music):
+
+        def wrapper():
+            enable = music.isChecked()
+            print(enable)
+            pygame.mixer.music.set_volume(0 if not enable else 0.3)
+
+        return wrapper
+
     def set_surface_and_title(self):
         """Задаем surface(поверхность поверх которой будет все рисоваться)
         и устанавливаем загаловок окна"""
@@ -152,7 +160,7 @@ class Game:
         pygame.display.set_caption('Змейка')
         # Добавление музыки на задний фон
         pygame.mixer.music.load('background.mp3')
-        pygame.mixer.music.set_volume(0.01)
+        pygame.mixer.music.set_volume(0)
 
     def event_loop(self, change_to):
         """Функция для отслеживания нажатий клавиш игроком"""
@@ -278,7 +286,7 @@ class Game:
         sys.exit()
 
     # def music_management(self):
-        # pass
+    # pass
 
 
 class Snake:
@@ -423,8 +431,6 @@ app = QApplication(sys.argv)
 w = widget(game)
 
 game.start_screen()
-
-
 
 while True:
     snake.change_to = game.event_loop(snake.change_to)
